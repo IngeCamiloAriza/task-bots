@@ -1,0 +1,8 @@
+1;2024-01-1;Meditar;Metas del proximo año;true
+2;2024-01-1;Revisar proyecto;Revision de proyecto task;true
+4;2024-01-1;Salir;Revision de proyecto task;true
+5;2024-01-2;Meditar;Metas del proximo año;false
+6;2024-01-2;Revisar proyecto;Revision de proyecto task;false
+7;2024-01-2;Salir;Revision de proyecto task;false
+8;2024-01-4;revisar;Revision de proyecto task;false
+9;2024-01-4;Ver apartamentos;ver apartamentos;false

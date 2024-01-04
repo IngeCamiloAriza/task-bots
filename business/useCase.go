@@ -17,6 +17,6 @@ var fileAdapterOut data.DataPortOut = new(io.FileAdaptreOut)
 func (c *UseCase) SearchTaskDay() []domain.TaskEntities {
 
 	var tm = time.Now()
-	var day = fmt.Sprintf("%d-%d-%d", tm.Year(), tm.Month(), tm.Day())
+	var day = fmt.Sprintf("%d-%02d-%d", tm.Year(), tm.Month(), tm.Day())
 	return fileAdapterOut.Search(day)
 }
