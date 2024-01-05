@@ -20,15 +20,15 @@ func main() {
 func optionBot(option int) {
 	if option == 1 {
 		resul := useCase.SearchTaskDay()
-		readResul(resul)
+		readTask(resul)
 	}
 	if option == 2 {
-		fmt.Printf("Todabia no esta diponible")
+		addTask()
 	}
 
 }
 
-func readResul(resul []domain.TaskEntities) {
+func readTask(resul []domain.TaskEntities) {
 
 	for position := 0; position < len(resul); position++ {
 		fmt.Printf("Las para hoy son las siguiente:\n %d \n", position+1)
@@ -36,4 +36,16 @@ func readResul(resul []domain.TaskEntities) {
 		fmt.Printf("Descipcion: %s \n", resul[position].Description)
 		fmt.Printf("Estado: %t \n", resul[position].Status)
 	}
+}
+
+func addTask() {
+
+	var name, description, date string
+	fmt.Println("Digite el nombre de la tarea: ")
+	fmt.Scanln(&name)
+	fmt.Println("Digite la descripcion de la tarea: ")
+	fmt.Scanln(&description)
+	fmt.Println("Digita la fecha de la tarea segun el formato (AAAA-MM-DD)")
+	fmt.Scanln(&date)
+	useCase.AddTaskDay(name, description,date)
 }

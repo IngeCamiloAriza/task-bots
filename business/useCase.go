@@ -20,3 +20,10 @@ func (c *UseCase) SearchTaskDay() []domain.TaskEntities {
 	var day = fmt.Sprintf("%d-%02d-%d", tm.Year(), tm.Month(), tm.Day())
 	return fileAdapterOut.Search(day)
 }
+
+func (c *UseCase) AddTaskDay(name string, description string, date string) {
+
+	var taskEntities domain.TaskEntities
+	taskEntities = taskEntities.NewTaskEnties(name, description, false)
+	fileAdapterOut.Add(taskEntities, date)
+}

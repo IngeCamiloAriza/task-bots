@@ -30,12 +30,26 @@ func (file *FileAdaptreOut) Search(date string) []domain.TaskEntities {
 	for scanner.Scan() {
 		line := scanner.Text()
 		separator := strings.Split(line, ";")
-		if (strings.Compare(separator[1], date)) == 0 {
-			status, _ := strconv.ParseBool(separator[4])
-			taskEntities := taskEntities.NewTaskEnties(separator[2], separator[3], status)
+		if (strings.Compare(separator[0], date)) == 0 {
+			status, _ := strconv.ParseBool(separator[3])
+			taskEntities := taskEntities.NewTaskEnties(separator[1], separator[2], status)
 			listTaskEntities = append(listTaskEntities, taskEntities)
 		}
 
 	}
 	return listTaskEntities
+}
+
+func (file *FileAdaptreOut) Add(taskEntities domain.TaskEntities, date string) {
+	line := "\n"+date + ";" + taskEntities.Name + ";" + taskEntities.Description + ";" + strconv.FormatBool(taskEntities.Status)
+	tasksMonth, err := os.OpenFile(address, os.O_WRONLY, 0644)
+	if err != nil {
+		slog.Error("A ocurrido un error al abrir el arhivo", err)
+	}
+	defer tasksMonth.Close()
+	tasksMonth.Seek(0,2)
+	_, err=tasksMonth.WriteString(line)
+	if err !=nil{
+		slog.Error("A ocurrido un error a preparar la linea", err)
+	}
 }
