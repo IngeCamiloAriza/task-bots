@@ -2,7 +2,7 @@
 
 [![go](https://img.shields.io/badge/go-v1.21.X-cyan.svg)](https://golang.org/)
 
-> Repositorio correspondiente a Bot para consultar y agregar tareas de la semana 
+> Repositorio correspondiente a Bot para consultar, agregar y actualizar tareas de la semana 
 
 ## Prerrequisitos :hammer:
 
@@ -23,6 +23,7 @@ A continuación, se observa las instrucciones de instalación:
 
 1. Clonar las fuentes correspondiente en su ubicación favorita.
 2. Importar las fuentes clonadas a su editor de preferencia.
+3. Leer la sección de [arquitectura](https://github.com/IngeCamiloAriza/task-bots/wiki/Arquitectura) para tener mejor entendimiento del proyecto. 
 
 ## Compilación :building_construction:
 
@@ -44,10 +45,12 @@ En docker:
 
 A continuación, se observa las instrucciones ejecución de test:
 
-1. Abrir una terminal
+1. Abrir una **terminal**
 2. Dirigir al paquete donde se encuentran los test
 3. Ejecutar el siguiente comando **go test**
 
 ## Nota :loud_sound:
 
-Si presenta algun error dirigirse a
+* Si presenta algún error dirigirse a la wiki de [errores](https://github.com/IngeCamiloAriza/task-bots/wiki/Errores-conocidos)
+
+* Para ver los pasos, nuevas versiones y estado dirigirse a la [wiki](https://github.com/IngeCamiloAriza/task-bots/wiki) del proyecto 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/IngeCamiloAriza/task-bots/data"
+	"github.com/IngeCamiloAriza/task-bots/business/port"
 	"github.com/IngeCamiloAriza/task-bots/data/file"
 	"github.com/IngeCamiloAriza/task-bots/domain"
 )
@@ -12,7 +12,7 @@ import (
 type UseCase struct {
 }
 
-var fileAdapterOut data.DataPortOut = new(io.FileAdaptreOut)
+var fileAdapterOut port.DataPortOut = new(file.FileAdaptreOut)
 
 func (c *UseCase) SearchTaskDay() []domain.TaskEntities {
 

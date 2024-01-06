@@ -1,4 +1,4 @@
-package io
+package file
 
 import (
 	"bufio"
@@ -41,15 +41,15 @@ func (file *FileAdaptreOut) Search(date string) []domain.TaskEntities {
 }
 
 func (file *FileAdaptreOut) Add(taskEntities domain.TaskEntities, date string) {
-	line := "\n"+date + ";" + taskEntities.Name + ";" + taskEntities.Description + ";" + strconv.FormatBool(taskEntities.Status)
+	line := "\n" + date + ";" + taskEntities.Name + ";" + taskEntities.Description + ";" + strconv.FormatBool(taskEntities.Status)
 	tasksMonth, err := os.OpenFile(address, os.O_WRONLY, 0644)
 	if err != nil {
 		slog.Error("A ocurrido un error al abrir el arhivo", err)
 	}
 	defer tasksMonth.Close()
-	tasksMonth.Seek(0,2)
-	_, err=tasksMonth.WriteString(line)
-	if err !=nil{
+	tasksMonth.Seek(0, 2)
+	_, err = tasksMonth.WriteString(line)
+	if err != nil {
 		slog.Error("A ocurrido un error a preparar la linea", err)
 	}
 }

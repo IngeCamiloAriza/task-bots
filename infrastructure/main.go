@@ -4,10 +4,11 @@ import (
 	"fmt"
 
 	"github.com/IngeCamiloAriza/task-bots/business"
+	"github.com/IngeCamiloAriza/task-bots/business/port"
 	"github.com/IngeCamiloAriza/task-bots/domain"
 )
 
-var useCase business.TaskPortIn = new(business.UseCase)
+var useCase port.TaskPortIn = new(business.UseCase)
 
 func main() {
 	var option int
@@ -47,5 +48,5 @@ func addTask() {
 	fmt.Scanln(&description)
 	fmt.Println("Digita la fecha de la tarea segun el formato (AAAA-MM-DD)")
 	fmt.Scanln(&date)
-	useCase.AddTaskDay(name, description,date)
+	useCase.AddTaskDay(name, description, date)
 }
