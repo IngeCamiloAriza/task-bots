@@ -14,8 +14,8 @@ type UseCase struct {
 	errorUseCase error
 }
 
-const(
-	messageErrorData=" no hay tarea para este dia "
+const (
+	messageErrorData = " no hay tarea para este dia "
 )
 
 var fileAdapterOut port.DataPortOut = new(file.FileAdapterOut)
@@ -35,9 +35,15 @@ func (c *UseCase) SearchTaskDay() ([]domain.TaskEntities, error) {
 	return resulSearch, nil
 }
 
-func (c *UseCase) AddTaskDay(name string, description string, date string) {
+func (c *UseCase) AddTaskDay(name string, description string, date string) error {
 
 	var taskEntities domain.TaskEntities
 	taskEntities = taskEntities.NewTaskEnties(name, description, false)
-	fileAdapterOut.Add(taskEntities, date)
+	errorUseCase := fileAdapterOut.Add(taskEntities, date)
+
+	if errorUseCase != nil {
+		return errorUseCase
+	}
+	return nil
+
 }

@@ -51,13 +51,15 @@ func (file *FileAdapterOut) Search(date string) ([]domain.TaskEntities, error) {
 	return listTaskEntities, nil
 }
 
-func (file *FileAdapterOut) Add(taskEntities domain.TaskEntities, date string) {
+func (file *FileAdapterOut) Add(taskEntities domain.TaskEntities, date string) error {
 
 	line := "\n" + date + ";" + taskEntities.Name + ";" + taskEntities.Description + ";" + strconv.FormatBool(taskEntities.Status)
 	tasksMonth, err := os.OpenFile(address, os.O_WRONLY, permissionsFile)
 
 	if err != nil {
 		slog.Error(messageErrorOpenFile, err)
+		file.errorFileAdapter= errors.New(messageErrorOpenFile)
+		return errors.Join(file.errorFileAdapter,err)
 	}
 
 	defer tasksMonth.Close()
@@ -66,5 +68,8 @@ func (file *FileAdapterOut) Add(taskEntities domain.TaskEntities, date string) {
 
 	if err != nil {
 		slog.Error(messageErrorSaveFile, err)
+		file.errorFileAdapter=errors.New(messageErrorSaveFile)
+		return errors.Join(file.errorFileAdapter,err)
 	}
+	return nil
 }

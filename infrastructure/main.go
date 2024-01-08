@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/IngeCamiloAriza/task-bots/business"
@@ -17,7 +18,8 @@ const (
 	messageGoodBye   = " Un gusto atenderlo maestro, espero que me vuelva a escribir pronto "
 	messageTemporale = " Funcionalidad no disponible actualmente"
 
-	messageErrorOption = "Lo siento master no le entiendo, recuerde las siguientes opciones: "
+	messageErrorOption   = "Lo siento master no le entiendo, recuerde las siguientes opciones: "
+	messageErrorValidate = "los campos nombre, descripcion y fecha no puede ser vacio maestro"
 )
 
 func main() {
@@ -80,4 +82,21 @@ func addTask() {
 	fmt.Println("Digita la fecha de la tarea segun el formato (AAAA-MM-DD)")
 	fmt.Scanln(&date)
 	useCase.AddTaskDay(name, description, date)
+	errorValidate := validateInput(name, description, date)
+
+	if errorValidate != nil {
+		fmt.Println(errorValidate)
+	}
+
+	if errorValidate == nil {
+		useCase.AddTaskDay(name, description, date)
+	}
+}
+
+func validateInput(name string, description string, date string) error {
+
+	if name == "" || description == "" || date == "" {
+		return errors.New(messageErrorValidate)
+	}
+	return nil
 }
