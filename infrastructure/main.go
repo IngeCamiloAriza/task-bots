@@ -10,21 +10,42 @@ import (
 
 var useCase port.TaskPortIn = new(business.UseCase)
 
+const (
+	messageWelcome   = " Hola maestro, que desea hacer "
+	messageOption    = " 1. Consultar tarea para hoy \n 2. Agregar actividades para la semana \n 3. Actulizar estado \n 4. Salir"
+	messageGoodBye   = " Un gusto atenderlo maestro, espero que me vuelva a escribir pronto "
+	messageTemporale = " Funcionalidad no disponible actualmente"
+
+	messageErrorOption = "Lo siento master no le entiendo, recuerde las siguientes opciones: "
+)
+
 func main() {
-	var option int
-	fmt.Println("Hola master, que desea hacer ")
-	fmt.Println(" 1. Consultar tarea para hoy \n 2. Agregar actividades para la semana")
-	fmt.Scanln(&option)
-	optionBot(option)
+
+	fmt.Println(messageWelcome)
+	optionBot()
 }
 
-func optionBot(option int) {
-	if option == 1 {
+func optionBot() {
+
+	var option int
+	fmt.Println(messageOption)
+	fmt.Scanln(&option)
+	switch option {
+	case 1:
 		resul := useCase.SearchTaskDay()
 		readTask(resul)
-	}
-	if option == 2 {
+		optionBot()
+	case 2:
 		addTask()
+		optionBot()
+	case 3:
+		fmt.Println(messageTemporale)
+		optionBot()
+	case 4:
+		fmt.Print(messageGoodBye)
+	default:
+		fmt.Println(messageErrorOption)
+		optionBot()
 	}
 
 }
@@ -32,10 +53,10 @@ func optionBot(option int) {
 func readTask(resul []domain.TaskEntities) {
 
 	for position := 0; position < len(resul); position++ {
-		fmt.Printf("Las para hoy son las siguiente:\n %d \n", position+1)
-		fmt.Printf("Nombre: %s \n", resul[position].Name)
-		fmt.Printf("Descipcion: %s \n", resul[position].Description)
-		fmt.Printf("Estado: %t \n", resul[position].Status)
+		fmt.Printf("Las para hoy hay son las siguiente tareas:\n %d.", position+1)
+		fmt.Printf("Nombre: %s", resul[position].Name)
+		fmt.Printf("Descipcion: %s", resul[position].Description)
+		fmt.Printf("Estado: %t", resul[position].Status)
 	}
 }
 

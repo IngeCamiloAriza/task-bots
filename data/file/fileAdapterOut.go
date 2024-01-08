@@ -14,7 +14,13 @@ import (
 type FileAdaptreOut struct {
 }
 
-const address = "../data/file/tasksMonth.txt"
+const (
+	address         = "../data/file/tasksMonth.txt"
+	permissionsFile = 0644
+
+	messageErrorOpenFile = "A ocurrido un error al abrir el archivo: "
+	messageErrorSaveFile = "A ocurrido un error al guardar los cambios del archivo: "
+)
 
 func (file *FileAdaptreOut) Search(date string) []domain.TaskEntities {
 
@@ -23,8 +29,9 @@ func (file *FileAdaptreOut) Search(date string) []domain.TaskEntities {
 	tasksMonth, err := os.Open(address)
 
 	if err != nil {
-		slog.Error("A ocurrido un error", err)
+		slog.Error(messageErrorOpenFile, err)
 	}
+
 	defer tasksMonth.Close()
 	scanner := bufio.NewScanner(tasksMonth)
 	for scanner.Scan() {
@@ -41,15 +48,19 @@ func (file *FileAdaptreOut) Search(date string) []domain.TaskEntities {
 }
 
 func (file *FileAdaptreOut) Add(taskEntities domain.TaskEntities, date string) {
+
 	line := "\n" + date + ";" + taskEntities.Name + ";" + taskEntities.Description + ";" + strconv.FormatBool(taskEntities.Status)
-	tasksMonth, err := os.OpenFile(address, os.O_WRONLY, 0644)
+	tasksMonth, err := os.OpenFile(address, os.O_WRONLY, permissionsFile)
+	
 	if err != nil {
-		slog.Error("A ocurrido un error al abrir el arhivo", err)
+		slog.Error(messageErrorOpenFile, err)
 	}
+	
 	defer tasksMonth.Close()
 	tasksMonth.Seek(0, 2)
 	_, err = tasksMonth.WriteString(line)
+	
 	if err != nil {
-		slog.Error("A ocurrido un error a preparar la linea", err)
+		slog.Error(messageErrorSaveFile, err)
 	}
 }
