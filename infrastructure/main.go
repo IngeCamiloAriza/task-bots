@@ -12,6 +12,7 @@ var useCase port.TaskPortIn = new(business.UseCase)
 
 const (
 	messageWelcome   = " Hola maestro, que desea hacer "
+	messageContinue  = " Recuerde que puede realizar las siguientes acciones:"
 	messageOption    = " 1. Consultar tarea para hoy \n 2. Agregar actividades para la semana \n 3. Actulizar estado \n 4. Salir"
 	messageGoodBye   = " Un gusto atenderlo maestro, espero que me vuelva a escribir pronto "
 	messageTemporale = " Funcionalidad no disponible actualmente"
@@ -32,19 +33,28 @@ func optionBot() {
 	fmt.Scanln(&option)
 	switch option {
 	case 1:
-		resul := useCase.SearchTaskDay()
-		readTask(resul)
+		resulSearchTask, err := useCase.SearchTaskDay()
+		if err == nil {
+			readTask(resulSearchTask)
+		}
+		if err != nil {
+			fmt.Println(err)
+			fmt.Println(messageContinue)
+		}
 		optionBot()
 	case 2:
 		addTask()
+		fmt.Println(messageContinue)
 		optionBot()
 	case 3:
 		fmt.Println(messageTemporale)
+		fmt.Println(messageContinue)
 		optionBot()
 	case 4:
 		fmt.Print(messageGoodBye)
 	default:
 		fmt.Println(messageErrorOption)
+		fmt.Println(messageContinue)
 		optionBot()
 	}
 

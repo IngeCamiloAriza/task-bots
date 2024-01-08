@@ -1,6 +1,7 @@
 package business
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -10,15 +11,28 @@ import (
 )
 
 type UseCase struct {
+	errorUseCase error
 }
 
-var fileAdapterOut port.DataPortOut = new(file.FileAdaptreOut)
+const(
+	messageErrorData=" no hay tarea para este dia "
+)
 
-func (c *UseCase) SearchTaskDay() []domain.TaskEntities {
+var fileAdapterOut port.DataPortOut = new(file.FileAdapterOut)
+
+func (c *UseCase) SearchTaskDay() ([]domain.TaskEntities, error) {
 
 	var tm = time.Now()
 	var day = fmt.Sprintf("%d-%02d-%d", tm.Year(), tm.Month(), tm.Day())
-	return fileAdapterOut.Search(day)
+	resulSearch, err := fileAdapterOut.Search(day)
+	if err != nil {
+		return nil, err
+	}
+
+	if resulSearch == nil {
+		return nil, errors.New(messageErrorData)
+	}
+	return resulSearch, nil
 }
 
 func (c *UseCase) AddTaskDay(name string, description string, date string) {

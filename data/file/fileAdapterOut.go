@@ -2,6 +2,7 @@ package file
 
 import (
 	"bufio"
+	"errors"
 	"strconv"
 
 	"log/slog"
@@ -11,25 +12,28 @@ import (
 	"github.com/IngeCamiloAriza/task-bots/domain"
 )
 
-type FileAdaptreOut struct {
+type FileAdapterOut struct {
+	errorFileAdapter error
 }
 
 const (
 	address         = "../data/file/tasksMonth.txt"
 	permissionsFile = 0644
 
-	messageErrorOpenFile = "A ocurrido un error al abrir el archivo: "
-	messageErrorSaveFile = "A ocurrido un error al guardar los cambios del archivo: "
+	messageErrorOpenFile = "a ocurrido un error al abrir el archivo: "
+	messageErrorSaveFile = "a ocurrido un error al guardar los cambios del archivo: "
 )
 
-func (file *FileAdaptreOut) Search(date string) []domain.TaskEntities {
+func (file *FileAdapterOut) Search(date string) ([]domain.TaskEntities, error) {
 
 	var taskEntities domain.TaskEntities
 	var listTaskEntities []domain.TaskEntities
 	tasksMonth, err := os.Open(address)
 
 	if err != nil {
+		file.errorFileAdapter= errors.New(messageErrorOpenFile)
 		slog.Error(messageErrorOpenFile, err)
+		return nil,errors.Join(file.errorFileAdapter,err)
 	}
 
 	defer tasksMonth.Close()
@@ -44,22 +48,22 @@ func (file *FileAdaptreOut) Search(date string) []domain.TaskEntities {
 		}
 
 	}
-	return listTaskEntities
+	return listTaskEntities, nil
 }
 
-func (file *FileAdaptreOut) Add(taskEntities domain.TaskEntities, date string) {
+func (file *FileAdapterOut) Add(taskEntities domain.TaskEntities, date string) {
 
 	line := "\n" + date + ";" + taskEntities.Name + ";" + taskEntities.Description + ";" + strconv.FormatBool(taskEntities.Status)
 	tasksMonth, err := os.OpenFile(address, os.O_WRONLY, permissionsFile)
-	
+
 	if err != nil {
 		slog.Error(messageErrorOpenFile, err)
 	}
-	
+
 	defer tasksMonth.Close()
 	tasksMonth.Seek(0, 2)
 	_, err = tasksMonth.WriteString(line)
-	
+
 	if err != nil {
 		slog.Error(messageErrorSaveFile, err)
 	}
