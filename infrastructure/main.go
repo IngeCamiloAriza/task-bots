@@ -81,7 +81,6 @@ func addTask() {
 	fmt.Scanln(&description)
 	fmt.Println("Digita la fecha de la tarea segun el formato (AAAA-MM-DD)")
 	fmt.Scanln(&date)
-	useCase.AddTaskDay(name, description, date)
 	errorValidate := validateInput(name, description, date)
 
 	if errorValidate != nil {

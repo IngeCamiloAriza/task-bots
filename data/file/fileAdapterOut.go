@@ -24,7 +24,7 @@ const (
 	messageErrorSaveFile = "a ocurrido un error al guardar los cambios del archivo: "
 )
 
-func (file *FileAdapterOut) Search(date string) ([]domain.TaskEntities, error) {
+func (file *FileAdapterOut) SearchTask(date string) ([]domain.TaskEntities, error) {
 
 	var taskEntities domain.TaskEntities
 	var listTaskEntities []domain.TaskEntities
@@ -51,7 +51,7 @@ func (file *FileAdapterOut) Search(date string) ([]domain.TaskEntities, error) {
 	return listTaskEntities, nil
 }
 
-func (file *FileAdapterOut) Add(taskEntities domain.TaskEntities, date string) error {
+func (file *FileAdapterOut) AddTask(taskEntities domain.TaskEntities, date string) error {
 
 	line := "\n" + date + ";" + taskEntities.Name + ";" + taskEntities.Description + ";" + strconv.FormatBool(taskEntities.Status)
 	tasksMonth, err := os.OpenFile(address, os.O_WRONLY, permissionsFile)
@@ -73,3 +73,5 @@ func (file *FileAdapterOut) Add(taskEntities domain.TaskEntities, date string) e
 	}
 	return nil
 }
+
+

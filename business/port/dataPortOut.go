@@ -3,6 +3,6 @@ package port
 import "github.com/IngeCamiloAriza/task-bots/domain"
 
 type DataPortOut interface {
-	Search(string) ([]domain.TaskEntities,error)
-	Add(domain.TaskEntities, string) error
+	SearchTask(string) ([]domain.TaskEntities, error)
+	AddTask(domain.TaskEntities, string) error
 }

@@ -24,7 +24,7 @@ func (c *UseCase) SearchTaskDay() ([]domain.TaskEntities, error) {
 
 	var tm = time.Now()
 	var day = fmt.Sprintf("%d-%02d-%d", tm.Year(), tm.Month(), tm.Day())
-	resulSearch, err := fileAdapterOut.Search(day)
+	resulSearch, err := fileAdapterOut.SearchTask(day)
 	if err != nil {
 		return nil, err
 	}
@@ -39,10 +39,10 @@ func (c *UseCase) AddTaskDay(name string, description string, date string) error
 
 	var taskEntities domain.TaskEntities
 	taskEntities = taskEntities.NewTaskEnties(name, description, false)
-	errorUseCase := fileAdapterOut.Add(taskEntities, date)
+	c.errorUseCase = fileAdapterOut.AddTask(taskEntities, date)
 
-	if errorUseCase != nil {
-		return errorUseCase
+	if c.errorUseCase != nil {
+		return c.errorUseCase
 	}
 	return nil
 
