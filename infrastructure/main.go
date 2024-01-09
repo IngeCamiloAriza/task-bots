@@ -35,7 +35,7 @@ func optionBot() {
 	fmt.Scanln(&option)
 	switch option {
 	case 1:
-		resulSearchTask, err := useCase.SearchTaskDay()
+		resulSearchTask, err := useCase.SearchTask()
 		if err == nil {
 			readTask(resulSearchTask)
 		}
@@ -88,7 +88,7 @@ func addTask() {
 	}
 
 	if errorValidate == nil {
-		useCase.AddTaskDay(name, description, date)
+		useCase.AddTask(name, description, date)
 	}
 }
 

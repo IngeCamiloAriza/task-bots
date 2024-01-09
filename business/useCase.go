@@ -20,11 +20,11 @@ const (
 
 var fileAdapterOut port.DataPortOut = new(file.FileAdapterOut)
 
-func (c *UseCase) SearchTaskDay() ([]domain.TaskEntities, error) {
+func (c *UseCase) SearchTask() ([]domain.TaskEntities, error) {
 
 	var tm = time.Now()
 	var day = fmt.Sprintf("%d-%02d-%d", tm.Year(), tm.Month(), tm.Day())
-	resulSearch, err := fileAdapterOut.SearchTask(day)
+	resulSearch, err := fileAdapterOut.SearchTaskDay(day)
 	if err != nil {
 		return nil, err
 	}
@@ -35,11 +35,11 @@ func (c *UseCase) SearchTaskDay() ([]domain.TaskEntities, error) {
 	return resulSearch, nil
 }
 
-func (c *UseCase) AddTaskDay(name string, description string, date string) error {
+func (c *UseCase) AddTask(name string, description string, date string) error {
 
 	var taskEntities domain.TaskEntities
 	taskEntities = taskEntities.NewTaskEnties(name, description, false)
-	c.errorUseCase = fileAdapterOut.AddTask(taskEntities, date)
+	c.errorUseCase = fileAdapterOut.AddTaskDay(taskEntities, date)
 
 	if c.errorUseCase != nil {
 		return c.errorUseCase
