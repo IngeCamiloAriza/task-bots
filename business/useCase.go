@@ -38,7 +38,7 @@ func (c *UseCase) SearchTask() ([]domain.TaskEntities, error) {
 func (c *UseCase) AddTask(name string, description string, date string) error {
 
 	var taskEntities domain.TaskEntities
-	taskEntities = taskEntities.NewTaskEnties(name, description, false)
+	taskEntities = taskEntities.NewTaskEnties(0, name, description, false)
 	c.errorUseCase = fileAdapterOut.AddTaskDay(taskEntities, date)
 
 	if c.errorUseCase != nil {
@@ -46,4 +46,23 @@ func (c *UseCase) AddTask(name string, description string, date string) error {
 	}
 	return nil
 
+}
+
+func (c *UseCase) SearchStatus(date string) ([]domain.TaskEntities, error) {
+
+	resulSearch, err := fileAdapterOut.SearchTaskStatus(date)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if resulSearch == nil {
+		return nil, errors.New(messageErrorData)
+	}
+
+	return resulSearch, nil
+}
+
+func (c *UseCase) UpdateStatus(taskEntities domain.TaskEntities) error {
+	return fileAdapterOut.UpdateTaskStatus(taskEntities)
 }
