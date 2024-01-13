@@ -31,12 +31,15 @@ func (file *FileAdapterOut) SearchTaskDay(date string) ([]domain.TaskEntities, e
 
 	var taskEntities domain.TaskEntities
 	var listTaskEntities []domain.TaskEntities
-	tasksMonth, err := file.openFileTaskMonth()
-	file.id = 0
+	tasksMonth, err := os.Open(address)
 
 	if err != nil {
-		return nil, err
+		file.errorFileAdapter = errors.New(messageErrorOpenFile)
+		slog.Error(messageErrorOpenFile, err)
+		return nil, errors.Join(file.errorFileAdapter, err)
 	}
+	defer tasksMonth.Close()
+	file.id = 0
 	scanner := bufio.NewScanner(tasksMonth)
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -54,7 +57,7 @@ func (file *FileAdapterOut) SearchTaskDay(date string) ([]domain.TaskEntities, e
 
 func (file *FileAdapterOut) AddTaskDay(taskEntities domain.TaskEntities, date string) error {
 
-	line := "\n" + date + ";" + taskEntities.Name + ";" + taskEntities.Description + ";" + strconv.FormatBool(taskEntities.Status)
+	line := date + ";" + taskEntities.Name + ";" + taskEntities.Description + ";" + strconv.FormatBool(taskEntities.Status)+"\n"
 	tasksMonth, err := os.OpenFile(address, os.O_WRONLY, permissionsFile)
 
 	if err != nil {
@@ -79,13 +82,16 @@ func (file *FileAdapterOut) SearchTaskStatus(date string) ([]domain.TaskEntities
 
 	var taskEntities domain.TaskEntities
 	var listTaskEntities []domain.TaskEntities
+	tasksMonth, err := os.Open(address)
 
-	tasksMonth, err := file.openFileTaskMonth()
-	file.id = 0
 	if err != nil {
-		return nil, err
+		file.errorFileAdapter = errors.New(messageErrorOpenFile)
+		slog.Error(messageErrorOpenFile, err)
+		return nil, errors.Join(file.errorFileAdapter, err)
 	}
+	defer tasksMonth.Close()
 
+	file.id = 0
 	scanner := bufio.NewScanner(tasksMonth)
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -110,7 +116,7 @@ func (file *FileAdapterOut) UpdateTaskStatus(taskEntities domain.TaskEntities) e
 		return err
 	}
 	var lineOld string
-	lineNew := taskEntities.Name + ";" + taskEntities.Description + ";" + strconv.FormatBool(taskEntities.Status)
+	lineNew := ";" + taskEntities.Name + ";" + taskEntities.Description
 	errorCloseFile := os.Remove(address)
 
 	if errorCloseFile != nil {
@@ -118,22 +124,25 @@ func (file *FileAdapterOut) UpdateTaskStatus(taskEntities domain.TaskEntities) e
 		slog.Error(messageErrorRemove, errorCloseFile)
 		return errors.Join(file.errorFileAdapter, errorCloseFile)
 	}
-	newFile, err := os.OpenFile(address, os.O_WRONLY, permissionsFile)
+
+	newFile, err := os.OpenFile(address, os.O_CREATE, permissionsFile)
 
 	if err != nil {
 		file.errorFileAdapter = errors.New(messageErrorCreate)
-		slog.Error(messageErrorRemove, errorCloseFile)
+		slog.Error(messageErrorCreate, errorCloseFile)
 		return errors.Join(file.errorFileAdapter, errorCloseFile)
 	}
 	defer newFile.Close()
 
 	for position := 0; position < len(allTask); position++ {
-		lineOld = allTask[position].Name + ";" + allTask[position].Description + ";" + strconv.FormatBool(allTask[position].Status)
+		lineOld = ";" + allTask[position].Name + ";" + allTask[position].Description
 
-		if strings.Compare(lineOld, lineNew) == 0 {
+		if (strings.Compare(lineOld, lineNew) == 0) && (taskEntities.Id == position+1) {
+			lineNew += ";" + strconv.FormatBool(true)
 			_, err = newFile.WriteString(date[position] + lineNew + "\n")
 		}
-		if strings.Compare(lineOld, lineNew) != 0 {
+		if (strings.Compare(lineOld, lineNew) != 0) && (taskEntities.Id != position+1) {
+			lineOld += ";" + strconv.FormatBool(allTask[position].Status)
 			_, err = newFile.WriteString(date[position] + lineOld + "\n")
 		}
 
@@ -148,35 +157,26 @@ func (file *FileAdapterOut) UpdateTaskStatus(taskEntities domain.TaskEntities) e
 	return nil
 }
 
-func (file *FileAdapterOut) openFileTaskMonth() (*os.File, error) {
-	tasksMonth, err := os.Open(address)
-
-	if err != nil {
-		file.errorFileAdapter = errors.New(messageErrorOpenFile)
-		slog.Error(messageErrorOpenFile, err)
-		return nil, errors.Join(file.errorFileAdapter, err)
-	}
-	defer tasksMonth.Close()
-	return tasksMonth, nil
-}
-
 func (file *FileAdapterOut) searchTaskAll() ([]domain.TaskEntities, []string, error) {
 
 	var taskEntities domain.TaskEntities
 	var listTaskEntities []domain.TaskEntities
 	var allDate []string
+	tasksMonth, err := os.Open(address)
 
-	tasksMonth, err := file.openFileTaskMonth()
-	file.id = 0
 	if err != nil {
-		return nil, nil, err
+		file.errorFileAdapter = errors.New(messageErrorOpenFile)
+		slog.Error(messageErrorOpenFile, err)
+		return nil, nil, errors.Join(file.errorFileAdapter, err)
 	}
+	defer tasksMonth.Close()
 
+	file.id = 0
 	scanner := bufio.NewScanner(tasksMonth)
 	for scanner.Scan() {
 		line := scanner.Text()
 		separator := strings.Split(line, ";")
-		allDate[file.id] = separator[0]
+		allDate = append(allDate, separator[0])
 		file.id += 1
 		status, _ := strconv.ParseBool(separator[3])
 		taskEntities := taskEntities.NewTaskEnties(file.id, separator[1], separator[2], status)

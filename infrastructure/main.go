@@ -12,9 +12,9 @@ import (
 var useCase port.TaskPortIn = new(business.UseCase)
 
 const (
-	messageWelcome   = " Hola maestro, que desea hacer "
-	messageContinue  = " Recuerde que puede realizar las siguientes acciones:"
-	messageOption    = " 1. Consultar tarea para hoy \n 2. Agregar actividades para la semana \n 3. Actulizar estado de tareas \n 4. Salir"
+	messageWelcome   = " \n Hola maestro, que desea hacer: \n "
+	messageContinue  = " \n Recuerde que puede realizar las siguientes acciones:"
+	messageOption    = " 1. Consultar tarea para hoy \n 2. Agregar actividades para la semana \n 3. Actualizar estado de tareas \n 4. Salir"
 	messageGoodBye   = " Un gusto atenderlo maestro, espero que me vuelva a escribir pronto "
 	messageTemporale = " Funcionalidad no disponible actualmente"
 
@@ -39,6 +39,7 @@ func optionBot() {
 		if err == nil {
 			fmt.Printf("Las para hoy hay son las siguiente tareas:")
 			readTask(resulSearchTask)
+			fmt.Println(messageContinue)
 		}
 		if err != nil {
 			fmt.Println(err)
@@ -67,30 +68,39 @@ func readTask(resul []domain.TaskEntities) {
 
 	for position := 0; position < len(resul); position++ {
 		fmt.Printf("\n %d.", position+1)
-		fmt.Printf("Nombre: %s", resul[position].Name)
-		fmt.Printf("Descipcion: %s", resul[position].Description)
-		fmt.Printf("Estado: %t", resul[position].Status)
+		fmt.Printf(" Nombre: %s", resul[position].Name)
+		fmt.Printf(" Descipcion: %s", resul[position].Description)
+		fmt.Printf(" Estado: %t", resul[position].Status)
 	}
+	fmt.Println()
 }
 
 func addTask() {
 
 	var name, description, date string
+	var err error
 	fmt.Println("Digite el nombre de la tarea: ")
 	fmt.Scanln(&name)
 	fmt.Println("Digite la descripcion de la tarea: ")
-	fmt.Scanln(&description)
+	fmt.Scanln("%q",&description)
 	fmt.Println("Digita la fecha de la tarea segun el formato (AAAA-MM-DD)")
 	fmt.Scanln(&date)
 	errorValidate := validateInput(name, description, date)
 
 	if errorValidate != nil {
 		fmt.Println(errorValidate)
-		fmt.Println(messageContinue)
 	}
 
 	if errorValidate == nil {
-		useCase.AddTask(name, description, date)
+		err = useCase.AddTask(name, description, date)
+	}
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if err == nil && errorValidate==nil{
+		fmt.Println("Tarea craada satisfatoriamente")
 	}
 }
 
@@ -114,15 +124,19 @@ func udateTask() {
 		fmt.Println(messageContinue)
 	}
 
-	if resulSearchStatus == nil {
+	if resulSearchStatus != nil {
 		fmt.Println("Las tareas para actualizar el estado en la fecha solicitada es:")
 		readTask(resulSearchStatus)
-		fmt.Println("Digite cual desea modificar: ")
+		fmt.Println("\n Digite cual desea modificar: ")
 		fmt.Scanln(&optionUpdate)
-		err = useCase.UpdateStatus(resulSearchStatus[optionUpdate])
+		err = useCase.UpdateStatus(resulSearchStatus[optionUpdate-1])
 
 		if err != nil {
 			fmt.Println(err)
+		}
+
+		if err == nil {
+			fmt.Println("Tarea satisfactoriamente actualizada")
 		}
 	}
 }
