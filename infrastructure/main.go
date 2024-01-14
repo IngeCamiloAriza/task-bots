@@ -122,13 +122,13 @@ func validateInputString(name string, description string, date string) error {
 func udateTask() {
 	var date string
 	var optionUpdate int
-	fmt.Println("Digite la fecha que desea actulizar el estado de la tarea: ")
+	var errorValidateOption, errorUpdateStatus error
+	fmt.Println("Digite la fecha que desea actulizar el estado de la tarea (AAAA-MM-DD): ")
 	fmt.Scanln(&date)
 	resulSearchStatus, err := useCase.SearchStatus(date)
 
 	if err != nil {
 		fmt.Println(err)
-		fmt.Println(messageContinue)
 	}
 
 	if resulSearchStatus != nil {
@@ -136,14 +136,30 @@ func udateTask() {
 		readTask(resulSearchStatus)
 		fmt.Println("\n Digite cual desea modificar: ")
 		fmt.Scanln(&optionUpdate)
-		err = useCase.UpdateStatus(resulSearchStatus[optionUpdate-1])
+		errorValidateOption = validateOptionUpdate(optionUpdate, len(resulSearchStatus))
 
-		if err != nil {
-			fmt.Println(err)
+		if errorValidateOption == nil {
+			errorUpdateStatus = useCase.UpdateStatus(resulSearchStatus[optionUpdate-1])
 		}
 
-		if err == nil {
+		if errorValidateOption != nil {
+			fmt.Println(errorValidateOption)
+		}
+
+		if errorUpdateStatus !=nil{
+			fmt.Println(errorUpdateStatus)
+		}
+
+		if errorValidateOption == nil && errorUpdateStatus == nil {
 			fmt.Println("Tarea satisfactoriamente actualizada")
 		}
 	}
+}
+
+func validateOptionUpdate(option int, length int) error {
+
+	if option > length || option == 0 {
+		return errors.New("digito una option incorecta")
+	}
+	return nil
 }
