@@ -2,7 +2,11 @@
 2024-01-2;Salir;Revision de proyecto task;false
 2024-01-4;revisar;Revision de proyecto task;false
 2024-01-4;Ver apartamentos;ver apartamentos;false
-2024-01-5;r;p;false
-2024-01-5;l;o;false
+2024-01-5;r;p;true
+2024-01-5;l;o;true
 2024-01-6;y;p;false
 2024-01-5;t;y;false
+2024-01-12;RevisarTareas;revisarPrograma;true
+2024-01-12;sigir;videos;false
+2024-01-12;"prueba;spacio";false
+2024-01-13;yu io;klojvn;false

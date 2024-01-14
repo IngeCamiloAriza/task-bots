@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
+	"os"
+	"strings"
 
 	"github.com/IngeCamiloAriza/task-bots/business"
 	"github.com/IngeCamiloAriza/task-bots/business/port"
@@ -79,13 +82,17 @@ func addTask() {
 
 	var name, description, date string
 	var err error
-	fmt.Println("Digite el nombre de la tarea: ")
-	fmt.Scanln(&name)
-	fmt.Println("Digite la descripcion de la tarea: ")
-	fmt.Scanln("%q",&description)
-	fmt.Println("Digita la fecha de la tarea segun el formato (AAAA-MM-DD)")
-	fmt.Scanln(&date)
-	errorValidate := validateInput(name, description, date)
+	readerConsole := bufio.NewReader(os.Stdin)
+	fmt.Println("Digite el nombre de la tarea : ")
+	name, _ = readerConsole.ReadString('\n')
+	name = strings.Replace(name, "\r\n", "", -1)
+	fmt.Println("Digite la descripcion de la tarea : ")
+	description, _ = readerConsole.ReadString('\n')
+	description = strings.Replace(description, "\r\n", "", -1)
+	fmt.Println("Digita la fecha de la tarea segun el formato (AAAA-MM-DD) ")
+	date, _ = readerConsole.ReadString('\n')
+	date = strings.Replace(date, "\r\n", "", -1)
+	errorValidate := validateInputString(name, description, date)
 
 	if errorValidate != nil {
 		fmt.Println(errorValidate)
@@ -99,12 +106,12 @@ func addTask() {
 		fmt.Println(err)
 	}
 
-	if err == nil && errorValidate==nil{
+	if err == nil && errorValidate == nil {
 		fmt.Println("Tarea craada satisfatoriamente")
 	}
 }
 
-func validateInput(name string, description string, date string) error {
+func validateInputString(name string, description string, date string) error {
 
 	if name == "" || description == "" || date == "" {
 		return errors.New(messageErrorValidate)
