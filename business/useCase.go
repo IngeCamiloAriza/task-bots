@@ -5,18 +5,15 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/IngeCamiloAriza/task-bots/business/port"
-	"github.com/IngeCamiloAriza/task-bots/data/file"
 	"github.com/IngeCamiloAriza/task-bots/business/dto"
+	"github.com/IngeCamiloAriza/task-bots/business/port"
+	messagesAndContants "github.com/IngeCamiloAriza/task-bots/common"
+	"github.com/IngeCamiloAriza/task-bots/data/file"
 )
 
 type UseCase struct {
 	errorUseCase error
 }
-
-const (
-	messageErrorData = " no hay tarea para este dia "
-)
 
 var fileAdapterOut port.DataPortOut = new(file.FileAdapterOut)
 
@@ -30,7 +27,7 @@ func (c *UseCase) SearchTask() ([]dto.TaskEntities, error) {
 	}
 
 	if resulSearch == nil {
-		return nil, errors.New(messageErrorData)
+		return nil, errors.New(messagesAndContants.MessageErrorData)
 	}
 	return resulSearch, nil
 }
@@ -57,7 +54,7 @@ func (c *UseCase) SearchStatus(date string) ([]dto.TaskEntities, error) {
 	}
 
 	if resulSearch == nil {
-		return nil, errors.New(messageErrorData)
+		return nil, errors.New(messagesAndContants.MessageErrorData)
 	}
 
 	return resulSearch, nil

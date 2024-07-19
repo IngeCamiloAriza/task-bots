@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/IngeCamiloAriza/task-bots/business/dto"
+	messagesAndConstants "github.com/IngeCamiloAriza/task-bots/common"
 )
 
 type FileAdapterOut struct {
@@ -17,30 +18,22 @@ type FileAdapterOut struct {
 	id               int
 }
 
-const (
-	address         = "../resources/tasksMonth.txt"
-	permissionsFile = 0644
-
-	messageErrorOpenFile = "a ocurrido un error al abrir el archivo: "
-	messageErrorSaveFile = "a ocurrido un error al guardar los cambios del archivo: "
-	messageErrorRemove   = "a ocurrido un error al eliminar el archivo"
-	messageErrorCreate   = "a ocurrido un error al crear el nuevo archivo"
-)
-
 func (file *FileAdapterOut) SearchTaskDay(date string) ([]dto.TaskEntities, error) {
 
 	var taskEntities dto.TaskEntities
 	var listTaskEntities []dto.TaskEntities
-	tasksMonth, err := os.Open(address)
+	tasksMonth, err := os.Open(messagesAndConstants.AddressFile)
 
 	if err != nil {
-		file.errorFileAdapter = errors.New(messageErrorOpenFile)
-		slog.Error(messageErrorOpenFile, err)
+		file.errorFileAdapter = errors.New(messagesAndConstants.MessageErrorOpenFile)
+		slog.Error(messagesAndConstants.MessageErrorOpenFile)
 		return nil, errors.Join(file.errorFileAdapter, err)
 	}
+
 	defer tasksMonth.Close()
 	file.id = 0
 	scanner := bufio.NewScanner(tasksMonth)
+
 	for scanner.Scan() {
 		line := scanner.Text()
 		separator := strings.Split(line, ";")
@@ -57,12 +50,12 @@ func (file *FileAdapterOut) SearchTaskDay(date string) ([]dto.TaskEntities, erro
 
 func (file *FileAdapterOut) AddTaskDay(taskEntities dto.TaskEntities, date string) error {
 
-	line := date + ";" + taskEntities.Name + ";" + taskEntities.Description + ";" + strconv.FormatBool(taskEntities.Status)+"\n"
-	tasksMonth, err := os.OpenFile(address, os.O_WRONLY, permissionsFile)
+	line := date + ";" + taskEntities.Name + ";" + taskEntities.Description + ";" + strconv.FormatBool(taskEntities.Status) + "\n"
+	tasksMonth, err := os.OpenFile(messagesAndConstants.AddressFile, os.O_WRONLY, messagesAndConstants.PermissionsFile)
 
 	if err != nil {
-		slog.Error(messageErrorOpenFile, err)
-		file.errorFileAdapter = errors.New(messageErrorOpenFile)
+		slog.Error(messagesAndConstants.MessageErrorOpenFile)
+		file.errorFileAdapter = errors.New(messagesAndConstants.MessageErrorOpenFile)
 		return errors.Join(file.errorFileAdapter, err)
 	}
 
@@ -71,8 +64,8 @@ func (file *FileAdapterOut) AddTaskDay(taskEntities dto.TaskEntities, date strin
 	_, err = tasksMonth.WriteString(line)
 
 	if err != nil {
-		slog.Error(messageErrorSaveFile, err)
-		file.errorFileAdapter = errors.New(messageErrorSaveFile)
+		slog.Error(messagesAndConstants.MessageErrorSaveFile)
+		file.errorFileAdapter = errors.New(messagesAndConstants.MessageErrorSaveFile)
 		return errors.Join(file.errorFileAdapter, err)
 	}
 	return nil
@@ -82,11 +75,11 @@ func (file *FileAdapterOut) SearchTaskStatus(date string) ([]dto.TaskEntities, e
 
 	var taskEntities dto.TaskEntities
 	var listTaskEntities []dto.TaskEntities
-	tasksMonth, err := os.Open(address)
+	tasksMonth, err := os.Open(messagesAndConstants.AddressFile)
 
 	if err != nil {
-		file.errorFileAdapter = errors.New(messageErrorOpenFile)
-		slog.Error(messageErrorOpenFile, err)
+		file.errorFileAdapter = errors.New(messagesAndConstants.MessageErrorOpenFile)
+		slog.Error(messagesAndConstants.MessageErrorOpenFile)
 		return nil, errors.Join(file.errorFileAdapter, err)
 	}
 	defer tasksMonth.Close()
@@ -117,19 +110,19 @@ func (file *FileAdapterOut) UpdateTaskStatus(taskEntities dto.TaskEntities) erro
 	}
 	var lineOld string
 	lineNew := ";" + taskEntities.Name + ";" + taskEntities.Description
-	errorCloseFile := os.Remove(address)
+	errorCloseFile := os.Remove(messagesAndConstants.AddressFile)
 
 	if errorCloseFile != nil {
-		file.errorFileAdapter = errors.New(messageErrorRemove)
-		slog.Error(messageErrorRemove, errorCloseFile)
+		file.errorFileAdapter = errors.New(messagesAndConstants.MessageErrorRemove)
+		slog.Error(messagesAndConstants.MessageErrorRemove)
 		return errors.Join(file.errorFileAdapter, errorCloseFile)
 	}
 
-	newFile, err := os.OpenFile(address, os.O_CREATE, permissionsFile)
+	newFile, err := os.OpenFile(messagesAndConstants.AddressFile, os.O_CREATE, messagesAndConstants.PermissionsFile)
 
 	if err != nil {
-		file.errorFileAdapter = errors.New(messageErrorCreate)
-		slog.Error(messageErrorCreate, errorCloseFile)
+		file.errorFileAdapter = errors.New(messagesAndConstants.MessageErrorCreate)
+		slog.Error(messagesAndConstants.MessageErrorCreate)
 		return errors.Join(file.errorFileAdapter, errorCloseFile)
 	}
 	defer newFile.Close()
@@ -147,8 +140,8 @@ func (file *FileAdapterOut) UpdateTaskStatus(taskEntities dto.TaskEntities) erro
 		}
 
 		if err != nil {
-			slog.Error(messageErrorSaveFile, err)
-			file.errorFileAdapter = errors.New(messageErrorSaveFile)
+			slog.Error(messagesAndConstants.MessageErrorSaveFile)
+			file.errorFileAdapter = errors.New(messagesAndConstants.MessageErrorSaveFile)
 			return errors.Join(file.errorFileAdapter, err)
 		}
 
@@ -162,11 +155,11 @@ func (file *FileAdapterOut) searchTaskAll() ([]dto.TaskEntities, []string, error
 	var taskEntities dto.TaskEntities
 	var listTaskEntities []dto.TaskEntities
 	var allDate []string
-	tasksMonth, err := os.Open(address)
+	tasksMonth, err := os.Open(messagesAndConstants.AddressFile)
 
 	if err != nil {
-		file.errorFileAdapter = errors.New(messageErrorOpenFile)
-		slog.Error(messageErrorOpenFile, err)
+		file.errorFileAdapter = errors.New(messagesAndConstants.MessageErrorOpenFile)
+		slog.Error(messagesAndConstants.MessageErrorOpenFile)
 		return nil, nil, errors.Join(file.errorFileAdapter, err)
 	}
 	defer tasksMonth.Close()
