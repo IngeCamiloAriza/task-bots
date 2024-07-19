@@ -1,10 +1,10 @@
 package port
 
-import "github.com/IngeCamiloAriza/task-bots/domain"
+import "github.com/IngeCamiloAriza/task-bots/business/dto"
 
 type TaskPortIn interface {
-	SearchTask() ([]domain.TaskEntities, error)
+	SearchTask() ([]dto.TaskEntities, error)
 	AddTask(string, string, string) error
-	SearchStatus(string) ([]domain.TaskEntities, error)
-	UpdateStatus(domain.TaskEntities)error
+	SearchStatus(string) ([]dto.TaskEntities, error)
+	UpdateStatus(dto.TaskEntities) error
 }

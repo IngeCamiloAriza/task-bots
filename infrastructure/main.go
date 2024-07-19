@@ -9,7 +9,7 @@ import (
 
 	"github.com/IngeCamiloAriza/task-bots/business"
 	"github.com/IngeCamiloAriza/task-bots/business/port"
-	"github.com/IngeCamiloAriza/task-bots/domain"
+	"github.com/IngeCamiloAriza/task-bots/business/dto"
 )
 
 var useCase port.TaskPortIn = new(business.UseCase)
@@ -67,7 +67,7 @@ func optionBot() {
 
 }
 
-func readTask(resul []domain.TaskEntities) {
+func readTask(resul []dto.TaskEntities) {
 
 	for position := 0; position < len(resul); position++ {
 		fmt.Printf("\n %d.", position+1)

@@ -10,3 +10,4 @@
 2024-01-12;sigir;videos;false
 2024-01-12;"prueba;spacio";false
 2024-01-13;yu io;klojvn;false
+2024-07-18;Actulizar bot;Realizar nuevo proceso segun lo aprendido;false

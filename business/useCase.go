@@ -7,7 +7,7 @@ import (
 
 	"github.com/IngeCamiloAriza/task-bots/business/port"
 	"github.com/IngeCamiloAriza/task-bots/data/file"
-	"github.com/IngeCamiloAriza/task-bots/domain"
+	"github.com/IngeCamiloAriza/task-bots/business/dto"
 )
 
 type UseCase struct {
@@ -20,7 +20,7 @@ const (
 
 var fileAdapterOut port.DataPortOut = new(file.FileAdapterOut)
 
-func (c *UseCase) SearchTask() ([]domain.TaskEntities, error) {
+func (c *UseCase) SearchTask() ([]dto.TaskEntities, error) {
 
 	var tm = time.Now()
 	var day = fmt.Sprintf("%d-%02d-%d", tm.Year(), tm.Month(), tm.Day())
@@ -37,7 +37,7 @@ func (c *UseCase) SearchTask() ([]domain.TaskEntities, error) {
 
 func (c *UseCase) AddTask(name string, description string, date string) error {
 
-	var taskEntities domain.TaskEntities
+	var taskEntities dto.TaskEntities
 	taskEntities = taskEntities.NewTaskEnties(0, name, description, false)
 	c.errorUseCase = fileAdapterOut.AddTaskDay(taskEntities, date)
 
@@ -48,7 +48,7 @@ func (c *UseCase) AddTask(name string, description string, date string) error {
 
 }
 
-func (c *UseCase) SearchStatus(date string) ([]domain.TaskEntities, error) {
+func (c *UseCase) SearchStatus(date string) ([]dto.TaskEntities, error) {
 
 	resulSearch, err := fileAdapterOut.SearchTaskStatus(date)
 
@@ -63,6 +63,6 @@ func (c *UseCase) SearchStatus(date string) ([]domain.TaskEntities, error) {
 	return resulSearch, nil
 }
 
-func (c *UseCase) UpdateStatus(taskEntities domain.TaskEntities) error {
+func (c *UseCase) UpdateStatus(taskEntities dto.TaskEntities) error {
 	return fileAdapterOut.UpdateTaskStatus(taskEntities)
 }

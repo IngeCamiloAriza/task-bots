@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/IngeCamiloAriza/task-bots/domain"
+	"github.com/IngeCamiloAriza/task-bots/business/dto"
 )
 
 type FileAdapterOut struct {
@@ -18,7 +18,7 @@ type FileAdapterOut struct {
 }
 
 const (
-	address         = "../data/file/tasksMonth.txt"
+	address         = "../resources/tasksMonth.txt"
 	permissionsFile = 0644
 
 	messageErrorOpenFile = "a ocurrido un error al abrir el archivo: "
@@ -27,10 +27,10 @@ const (
 	messageErrorCreate   = "a ocurrido un error al crear el nuevo archivo"
 )
 
-func (file *FileAdapterOut) SearchTaskDay(date string) ([]domain.TaskEntities, error) {
+func (file *FileAdapterOut) SearchTaskDay(date string) ([]dto.TaskEntities, error) {
 
-	var taskEntities domain.TaskEntities
-	var listTaskEntities []domain.TaskEntities
+	var taskEntities dto.TaskEntities
+	var listTaskEntities []dto.TaskEntities
 	tasksMonth, err := os.Open(address)
 
 	if err != nil {
@@ -55,7 +55,7 @@ func (file *FileAdapterOut) SearchTaskDay(date string) ([]domain.TaskEntities, e
 	return listTaskEntities, nil
 }
 
-func (file *FileAdapterOut) AddTaskDay(taskEntities domain.TaskEntities, date string) error {
+func (file *FileAdapterOut) AddTaskDay(taskEntities dto.TaskEntities, date string) error {
 
 	line := date + ";" + taskEntities.Name + ";" + taskEntities.Description + ";" + strconv.FormatBool(taskEntities.Status)+"\n"
 	tasksMonth, err := os.OpenFile(address, os.O_WRONLY, permissionsFile)
@@ -78,10 +78,10 @@ func (file *FileAdapterOut) AddTaskDay(taskEntities domain.TaskEntities, date st
 	return nil
 }
 
-func (file *FileAdapterOut) SearchTaskStatus(date string) ([]domain.TaskEntities, error) {
+func (file *FileAdapterOut) SearchTaskStatus(date string) ([]dto.TaskEntities, error) {
 
-	var taskEntities domain.TaskEntities
-	var listTaskEntities []domain.TaskEntities
+	var taskEntities dto.TaskEntities
+	var listTaskEntities []dto.TaskEntities
 	tasksMonth, err := os.Open(address)
 
 	if err != nil {
@@ -108,7 +108,7 @@ func (file *FileAdapterOut) SearchTaskStatus(date string) ([]domain.TaskEntities
 
 }
 
-func (file *FileAdapterOut) UpdateTaskStatus(taskEntities domain.TaskEntities) error {
+func (file *FileAdapterOut) UpdateTaskStatus(taskEntities dto.TaskEntities) error {
 
 	allTask, date, err := file.searchTaskAll()
 
@@ -157,10 +157,10 @@ func (file *FileAdapterOut) UpdateTaskStatus(taskEntities domain.TaskEntities) e
 	return nil
 }
 
-func (file *FileAdapterOut) searchTaskAll() ([]domain.TaskEntities, []string, error) {
+func (file *FileAdapterOut) searchTaskAll() ([]dto.TaskEntities, []string, error) {
 
-	var taskEntities domain.TaskEntities
-	var listTaskEntities []domain.TaskEntities
+	var taskEntities dto.TaskEntities
+	var listTaskEntities []dto.TaskEntities
 	var allDate []string
 	tasksMonth, err := os.Open(address)
 

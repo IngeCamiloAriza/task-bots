@@ -1,10 +1,10 @@
 package port
 
-import "github.com/IngeCamiloAriza/task-bots/domain"
+import "github.com/IngeCamiloAriza/task-bots/business/dto"
 
 type DataPortOut interface {
-	SearchTaskDay(string) ([]domain.TaskEntities, error)
-	AddTaskDay(domain.TaskEntities, string) error
-	SearchTaskStatus(string)([]domain.TaskEntities,error)
-	UpdateTaskStatus(domain.TaskEntities) error
+	SearchTaskDay(string) ([]dto.TaskEntities, error)
+	AddTaskDay(dto.TaskEntities, string) error
+	SearchTaskStatus(string) ([]dto.TaskEntities, error)
+	UpdateTaskStatus(dto.TaskEntities) error
 }
