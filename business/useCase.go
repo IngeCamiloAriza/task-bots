@@ -17,11 +17,13 @@ type UseCase struct {
 
 var fileAdapterOut port.DataPortOut = new(file.FileAdapterOut)
 
-func (c *UseCase) SearchTask() ([]dto.TaskEntities, error) {
+func (c *UseCase) SearchTask() ([]dto.Task, error) {
 
 	var tm = time.Now()
 	var day = fmt.Sprintf("%d-%02d-%d", tm.Year(), tm.Month(), tm.Day())
+
 	resulSearch, err := fileAdapterOut.SearchTaskDay(day)
+
 	if err != nil {
 		return nil, err
 	}
@@ -34,8 +36,9 @@ func (c *UseCase) SearchTask() ([]dto.TaskEntities, error) {
 
 func (c *UseCase) AddTask(name string, description string, date string) error {
 
-	var taskEntities dto.TaskEntities
-	taskEntities = taskEntities.NewTaskEnties(0, name, description, false)
+	var taskEntities dto.Task
+
+	taskEntities = taskEntities.NewTask(name, 0, description, false)
 	c.errorUseCase = fileAdapterOut.AddTaskDay(taskEntities, date)
 
 	if c.errorUseCase != nil {
@@ -45,7 +48,7 @@ func (c *UseCase) AddTask(name string, description string, date string) error {
 
 }
 
-func (c *UseCase) SearchStatus(date string) ([]dto.TaskEntities, error) {
+func (c *UseCase) SearchStatus(date string) ([]dto.Task, error) {
 
 	resulSearch, err := fileAdapterOut.SearchTaskStatus(date)
 
@@ -60,6 +63,6 @@ func (c *UseCase) SearchStatus(date string) ([]dto.TaskEntities, error) {
 	return resulSearch, nil
 }
 
-func (c *UseCase) UpdateStatus(taskEntities dto.TaskEntities) error {
+func (c *UseCase) UpdateStatus(taskEntities dto.Task) error {
 	return fileAdapterOut.UpdateTaskStatus(taskEntities)
 }

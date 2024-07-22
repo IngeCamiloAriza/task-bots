@@ -18,10 +18,10 @@ type FileAdapterOut struct {
 	id               int
 }
 
-func (file *FileAdapterOut) SearchTaskDay(date string) ([]dto.TaskEntities, error) {
+func (file *FileAdapterOut) SearchTaskDay(date string) ([]dto.Task, error) {
 
-	var taskEntities dto.TaskEntities
-	var listTaskEntities []dto.TaskEntities
+	var taskEntities dto.Task
+	var listTaskEntities []dto.Task
 	tasksMonth, err := os.Open(messagesAndConstants.AddressFile)
 
 	if err != nil {
@@ -40,7 +40,7 @@ func (file *FileAdapterOut) SearchTaskDay(date string) ([]dto.TaskEntities, erro
 		file.id += 1
 		if (strings.Compare(separator[0], date)) == 0 {
 			status, _ := strconv.ParseBool(separator[3])
-			taskEntities := taskEntities.NewTaskEnties(file.id, separator[1], separator[2], status)
+			taskEntities := taskEntities.NewTask(separator[1], file.id, separator[2], status)
 			listTaskEntities = append(listTaskEntities, taskEntities)
 		}
 
@@ -48,7 +48,7 @@ func (file *FileAdapterOut) SearchTaskDay(date string) ([]dto.TaskEntities, erro
 	return listTaskEntities, nil
 }
 
-func (file *FileAdapterOut) AddTaskDay(taskEntities dto.TaskEntities, date string) error {
+func (file *FileAdapterOut) AddTaskDay(taskEntities dto.Task, date string) error {
 
 	line := date + ";" + taskEntities.Name + ";" + taskEntities.Description + ";" + strconv.FormatBool(taskEntities.Status) + "\n"
 	tasksMonth, err := os.OpenFile(messagesAndConstants.AddressFile, os.O_WRONLY, messagesAndConstants.PermissionsFile)
@@ -71,10 +71,10 @@ func (file *FileAdapterOut) AddTaskDay(taskEntities dto.TaskEntities, date strin
 	return nil
 }
 
-func (file *FileAdapterOut) SearchTaskStatus(date string) ([]dto.TaskEntities, error) {
+func (file *FileAdapterOut) SearchTaskStatus(date string) ([]dto.Task, error) {
 
-	var taskEntities dto.TaskEntities
-	var listTaskEntities []dto.TaskEntities
+	var taskEntities dto.Task
+	var listTaskEntities []dto.Task
 	tasksMonth, err := os.Open(messagesAndConstants.AddressFile)
 
 	if err != nil {
@@ -92,7 +92,7 @@ func (file *FileAdapterOut) SearchTaskStatus(date string) ([]dto.TaskEntities, e
 		file.id += 1
 		if (strings.Compare(separator[0], date)) == 0 && separator[3] == "false" {
 			status, _ := strconv.ParseBool(separator[3])
-			taskEntities := taskEntities.NewTaskEnties(file.id, separator[1], separator[2], status)
+			taskEntities := taskEntities.NewTask(separator[1], file.id, separator[2], status)
 			listTaskEntities = append(listTaskEntities, taskEntities)
 		}
 
@@ -101,7 +101,7 @@ func (file *FileAdapterOut) SearchTaskStatus(date string) ([]dto.TaskEntities, e
 
 }
 
-func (file *FileAdapterOut) UpdateTaskStatus(taskEntities dto.TaskEntities) error {
+func (file *FileAdapterOut) UpdateTaskStatus(taskEntities dto.Task) error {
 
 	allTask, date, err := file.searchTaskAll()
 
@@ -150,10 +150,10 @@ func (file *FileAdapterOut) UpdateTaskStatus(taskEntities dto.TaskEntities) erro
 	return nil
 }
 
-func (file *FileAdapterOut) searchTaskAll() ([]dto.TaskEntities, []string, error) {
+func (file *FileAdapterOut) searchTaskAll() ([]dto.Task, []string, error) {
 
-	var taskEntities dto.TaskEntities
-	var listTaskEntities []dto.TaskEntities
+	var taskEntities dto.Task
+	var listTaskEntities []dto.Task
 	var allDate []string
 	tasksMonth, err := os.Open(messagesAndConstants.AddressFile)
 
@@ -172,7 +172,7 @@ func (file *FileAdapterOut) searchTaskAll() ([]dto.TaskEntities, []string, error
 		allDate = append(allDate, separator[0])
 		file.id += 1
 		status, _ := strconv.ParseBool(separator[3])
-		taskEntities := taskEntities.NewTaskEnties(file.id, separator[1], separator[2], status)
+		taskEntities := taskEntities.NewTask(separator[1], file.id, separator[2], status)
 		listTaskEntities = append(listTaskEntities, taskEntities)
 
 	}

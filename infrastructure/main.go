@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/IngeCamiloAriza/task-bots/business"
-	"github.com/IngeCamiloAriza/task-bots/business/port"
 	"github.com/IngeCamiloAriza/task-bots/business/dto"
+	"github.com/IngeCamiloAriza/task-bots/business/port"
 )
 
 var useCase port.TaskPortIn = new(business.UseCase)
@@ -67,7 +67,7 @@ func optionBot() {
 
 }
 
-func readTask(resul []dto.TaskEntities) {
+func readTask(resul []dto.Task) {
 
 	for position := 0; position < len(resul); position++ {
 		fmt.Printf("\n %d.", position+1)
@@ -146,7 +146,7 @@ func udateTask() {
 			fmt.Println(errorValidateOption)
 		}
 
-		if errorUpdateStatus !=nil{
+		if errorUpdateStatus != nil {
 			fmt.Println(errorUpdateStatus)
 		}
 
